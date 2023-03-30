@@ -35,7 +35,8 @@ dans le répertoire courant"
     echo "r) Rechercher tous les fichiers dont le nom contient une chaine de caractère (définie en
 paramètre) présents dans tous les sous-répertoires de l’arborescence du répertoire
 courant"
-    echo "s) Quitter"
+    echo "s) Recherche de fichiers selon la combinaison : taille, date, nom"
+    echo "t) Quitter"
 }
 
 # Fonction qui affiche le résultat de la recherche
@@ -43,6 +44,29 @@ function afficher_resultat {
     echo "Résultat de la recherche :"
     cat resultat_recherche.txt
     echo ""
+}
+
+function rechercher_combinaison {
+read -p "Entrez la taille en Mo du fichier (vide si indifférent) : " taille
+read -p "Entrez la date de création des fichiers (vide si indifférent) [Format : AAAA-MM-JJ] : " date
+read -p "Entrez le nom du fichier (vide si indifférent) : " nom
+
+# Construction de la commande find en fonction des paramètres renseignés
+commande="find . -type f"
+if [[ ! -z $taille ]]; then
+    commande="$commande -size +${taille}M"
+fi
+if [[ ! -z $date ]]; then
+    commande="$commande -newermt ${date}"
+fi
+if [[ ! -z $nom ]]; then
+    commande="$commande -name '${nom}'"
+fi
+
+# Exécution de la commande find
+echo "$(date +'%d/%m/%Y %H:%M:%S') | Recherche de fichiers selon la combinaison : taille=$taille Mo, date=$date, nom=$nom"
+eval "$commande" > resultat_recherche.txt
+afficher_resultat
 }
 
 # Initialisation de la variable de recherche
@@ -83,16 +107,17 @@ while true; do
 	m) read -p "Entrez la taille minimale en Mo : " taille
 	   echo "$(date +'%d/%m/%Y %H:%M:%S') | $(find . -type f -size +"$taille"M)" >> resultat_recherche.txt ;;
 	n) read -p "Entrez la taille maximale en octets : " taille
-	   find . -type f -size -"$taille"c >> resultat_recherche.txt ;;
+	   echo "$(date +'%d/%m/%Y %H:%M:%S') | $(find . -type f -size -"$taille"c)" >> resultat_recherche.txt ;;
 	o) read -p "Entrez la taille maximale en Mo : " taille
-	   find . -type f -size -"$taille"M >> resultat_recherche.txt ;;
+	   echo "$(date +'%d/%m/%Y %H:%M:%S') | $(find . -type f -size -"$taille"M)" >> resultat_recherche.txt ;;
 	p) read -p "Entrez l'extension recherchée (sans le point) : " extension
-	   find . -type f -name ".$extension" >> resultat_recherche.txt ;;
+	   echo "$(date +'%d/%m/%Y %H:%M:%S') | $(find . -type f -name ".$extension")" >> resultat_recherche.txt ;;
 	q) read -p "Entrez l'extension recherchée (sans le point) : " extension
-	   find . -maxdepth 1 -type f -name ".$extension" >> resultat_recherche.txt ;;
+	   echo "$(date +'%d/%m/%Y %H:%M:%S') | $(find . -maxdepth 1 -type f -name ".$extension")" >> resultat_recherche.txt ;;
 	r) read -p "Entrez une chaîne de caractères : " chaine
-	   grep -r "$chaine" . >> resultat_recherche.txt ;;
-    s) break ;;
+	   echo "$(date +'%d/%m/%Y %H:%M:%S') | $(grep -r "$chaine") .)" >> resultat_recherche.txt ;;
+	s) rechercher_combinaison;;
+    t) break ;;
     *) echo "Option invalide" ;;
 esac
 

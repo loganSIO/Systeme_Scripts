@@ -33,7 +33,7 @@ while true; do
     echo "2. Identifier les services actifs sur le système"
     echo "3. Identifier le statut d'un service"
     echo "4. Afficher la description d'un service"
-    echo "5. Quitter"
+    echo "5. Retourner à l'interface de menu"
     read -p "Entrez votre choix : " choice
 
     case $choice in
@@ -54,6 +54,7 @@ while true; do
             read -p "Appuyez sur une touche pour revenir au menu principal" -n1
             ;;
         5)
+            ./Interface.sh
             exit 0
             ;;
         *)

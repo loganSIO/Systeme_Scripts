@@ -36,7 +36,7 @@ dans le répertoire courant"
 paramètre) présents dans tous les sous-répertoires de l’arborescence du répertoire
 courant"
     echo "s) Recherche de fichiers selon la combinaison : taille, date, nom"
-    echo "t) Quitter"
+    echo "t) Retourner à l'interface de menu"
 }
 
 # Fonction qui affiche le résultat de la recherche
@@ -117,7 +117,7 @@ while true; do
 	r) read -p "Entrez une chaîne de caractères : " chaine
 	   echo "$(date +'%d/%m/%Y %H:%M:%S') | $(grep -r "$chaine") .)" >> resultat_recherche.txt ;;
 	s) rechercher_combinaison;;
-    t) break ;;
+    t) ./Interface.sh ;;
     *) echo "Option invalide" ;;
 esac
 

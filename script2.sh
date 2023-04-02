@@ -11,7 +11,7 @@ echo "4. Identifier les processus consommant le plus de mémoire et indiquer leu
 echo "5. Identifier les processus dont le nom contient une chaîne de caractères et indiquer leur propriétaire"
 echo "6. Liste des processus triés par consommation de mémoire"
 echo "7. Recherche de processus selon un filtre combinant les possibilités."
-echo "8. Quitter"
+echo "8. Retourner à l'interface de menu"
 echo "Choisissez une option : "
 }
 
@@ -123,7 +123,7 @@ while true; do
        afficher_resultat
        read -p "Appuyez sur une touche pour continuer.";;
     8) clear
-       echo "Merci d'avoir utilisé ce script. À bientôt !"
+       ./Interface.sh
        exit;;
     *) clear
        echo "Option invalide. Veuillez choisir une option valide."

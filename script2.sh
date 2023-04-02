@@ -10,7 +10,8 @@ echo "3. Identifier les processus appartenant à un utilisateur donné en param�
 echo "4. Identifier les processus consommant le plus de mémoire et indiquer leur propriétaire"
 echo "5. Identifier les processus dont le nom contient une chaîne de caractères et indiquer leur propriétaire"
 echo "6. Liste des processus triés par consommation de mémoire"
-echo "7. Quitter"
+echo "7. Recherche de processus selon un filtre combinant les possibilités."
+echo "8. Quitter"
 echo "Choisissez une option : "
 }
 
@@ -60,6 +61,21 @@ fonctionnalite_supplementaire() {
   ps -eo pid,%mem,command --sort=-%mem | head >> "$fichier_sortie"
 }
 
+# Fonction qui gère les filtres de script
+afficher_resultat_filtre() {
+       clear
+       echo "Résultat de la recherche :"
+       if [ -n "$1" ] && [ -n "$2" ]; then
+       ps -ef | grep $nom_processus | grep $nom_utilisateur | grep -v grep | awk '{print $0 " - propriétaire: " $1}' >> "$fichier_sortie"
+       elif [ -n "$1" ]; then
+       ps -ef | grep $nom_processus | grep -v grep | awk '{if ($8 ~ /R|S/) print $0 " - propriétaire: " $1}' >> "$fichier_sortie"
+       elif [ -n "$2" ]; then
+       ps -ef | grep $nom_utilisateur | grep -v grep | awk '{print $0 " - propriétaire: " $1}' >> "$fichier_sortie"
+       else
+       ps -ef | grep $nom_processus | grep $nom_utilisateur | grep -v grep | awk '{print $0 " - propriétaire: " $1}' >> "$fichier_sortie"
+       fi
+     }
+
 # Boucle principale
 while true; do
   clear
@@ -100,6 +116,13 @@ while true; do
        afficher_resultat
        read -p "Appuyez sur une touche pour continuer.";;
     7) clear
+       echo "Recherche de processus selon un filtre combinant les possibilités."
+       read -p "Entrez le nom d'utilisateur : " nom_utilisateur
+       read -p "Entrez une chaîne de caractères : " nom_processus
+       afficher_resultat_filtre $nom_utilisateur $nom_processus
+       afficher_resultat
+       read -p "Appuyez sur une touche pour continuer.";;
+    8) clear
        echo "Merci d'avoir utilisé ce script. À bientôt !"
        exit;;
     *) clear
